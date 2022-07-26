@@ -1,6 +1,4 @@
-const candidate = Array(45)
-  .fill()
-  .map((v, i) => i + 1);
+const candidate = Array(45).fill().map((v, i) => i + 1);
 const shuffle = [];
 while (candidate.length > 0) {
   const random = Math.floor(Math.random() * candidate.length); // 무작위 인덱스 뽑기
@@ -20,14 +18,33 @@ while (candidate.length > 0) {
 // }
 // console.log(shuffle);
 
+
 const winBalls = shuffle.splice(0, 6).sort((a, b) => a - b);
 const bonus = shuffle[6];
 
 const $result = document.querySelector("#result");
 const $bonus = document.querySelector("#bonus");
 
+function colorize (number, $tag){
+  if(number < 10){
+    $tag.style.background = 'red'
+    $tag.style.color = 'white'
+  } else if(number < 20){
+    $tag.style.background = 'orange'
+  } else if(number < 30){
+    $tag.style.background = 'yellow'
+  } else if(number < 40){
+    $tag.style.background = 'blue'
+    $tag.style.color = 'white'
+  } else {
+    $tag.style.background = 'green'
+    $tag.style.color = 'white'
+  }
+}
+
 function drawBall(number, $parent) {
   const $ball = document.createElement("div");
+  colorize(number, $ball);
   $ball.classList.add("ball");
   $ball.innerText = number;
   $parent.append($ball);
