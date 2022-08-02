@@ -8,17 +8,20 @@ for (let i = 0; i < 3; i++) {
 }
 
 function checkWinner(target) {
-  let rowIndex;
-  let cellIndex;
+  const rowIndex = target.parentNode.rowIndex;
+  const cellIndex = target.cellIndex;
 
-  rows.forEach((row, ri) => {
-    row.forEach((cell, ci) => {
-      if (cell === target) {
-        rowIndex = ri;
-        cellIndex = ci;
-      }
-    });
-  });
+  // let rowIndex;
+  // let cellIndex;
+
+  // rows.forEach((row, ri) => {
+  //   row.forEach((cell, ci) => {
+  //     if (cell === target) {
+  //       rowIndex = ri;
+  //       cellIndex = ci;
+  //     }
+  //   });
+  // });
 
   let hasWinner = false;
 
@@ -66,29 +69,53 @@ function callback(e) {
 
   if (checkWinner(e.target)) {
     $result.innerText = `${turn}님의 승리`;
-    $table.removeEventListener('click',callback);
+    $table.removeEventListener("click", callback);
     return;
   }
 
+  // let draw = true;
+  // rows.forEach((row)=>{
+  //   row.forEach((cell)=>{
+  //     if(!cell.innerText){
+  //       draw = false;
+  //     }
+  //   })
+  // })
 
-  let draw = true;
-  rows.forEach((row)=>{
-    row.forEach((cell)=>{
-      console.log(!cell.innerText)
-      if(!cell.innerText){
-        draw = false;
-      }
-    })
-  })
+  let draw = rows.flat().every((cell) => {
+    return cell.innerText;
+  });
+
+  if (draw) {
+    $result.innerText = "무승부";
+    return;
+  }
+
+  turn = turn === "X" ? "O" : "X";
+
+  if (turn === "X") {
+    const emptyCells = rows.flat().filter((item) => !item.innerText);
+    const randomCell = emptyCells[Math.floor(Math.random() * emptyCells.length)];
+    randomCell.innerText = 'X';
+
+    const hasWinner = checkWinner(randomCell);
+    if(hasWinner){
+      $result.innerText = `${turn}님의 승리`;
+      return;
+    }
+
+    let draw = rows.flat().every((cell) => {
+      return cell.innerText;
+    });
   
-  if(draw){
-    $result.innerText = '무승부';
-    return;
+    if (draw) {
+      $result.innerText = "무승부";
+      return;
+    }
+  
+    turn = turn === "X" ? "O" : "X";
+    
   }
-
-
-
-  turn = turn === "O" ? "X" : "O";
 }
 
 const $table = document.createElement("table");
