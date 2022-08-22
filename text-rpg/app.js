@@ -25,7 +25,6 @@ class Game {
 
     this.start(name);
   }
-
   start(name) {
     $gameMenu.addEventListener("submit", this.onGameMenuInput);
     $battleMenu.addEventListener("submit", this.onBattleMenuInput);
@@ -33,7 +32,6 @@ class Game {
     this.hero = new Hero(this, name);
     this.updateHeroStat();
   }
-
   changeScreen(screen) {
     if (screen === "start") {
       $startScreen.style.display = "block";
@@ -49,23 +47,35 @@ class Game {
       $battleMenu.style.display = "block";
     }
   }
-
   onGameMenuInput = (e) => {
     e.preventDefault();
     const input = e.target["menu-input"].value;
     if (input === "1") {
       this.changeScreen("battle");
+      const randomIndex = Math.floor(Math.random() * this.monsterList.length);
+      const randomMonster = this.monsterList[randomIndex];
+      this.monster = new Monster(
+        this.randomMonster.name,
+        this.randomMonster.hp,
+        this.randomMonster.att,
+        this.randomMonster.xp,
+      )
+
     } else if (input === "2") {
     } else if (input === "3") {
       this.changeScreen("game");
     }
   };
-
   onBattleMenuInput = (e) => {
     e.preventDefault();
     const input = e.target["battle-input"].value;
     if (input === "1") {
-      this.changeScreen("battle");
+      // this.changeScreen("battle");
+      const {hero, monster} = this;
+      hero.attack(monster);
+      this.showMessage(`${hero.att}의 데미지를 주고, ${monster.att}의 데미지를 받았다.`);
+      this.updateHeroStat();
+      this.updateMonsterStat();
     } else if (input === "2") {
     } else if (input === "3") {
       this.changeScreen("game");
@@ -106,6 +116,22 @@ class Game {
     $heroHp.innerText = `HP: ${hero.hp}/${hero.maxHp}`;
     $heroXp.innerText = `XP: ${hero.xp}/${15 * hero.lev}`;
     $heroAtt.innerText = `ATT: ${hero.att}`;
+  }
+
+  updateMonsterStat() {
+    const { monster } = this;
+    if (monster === null) {
+      $monsterName.textContent = '';
+      $monsterHp.textContent = '';
+      $monsterAtt.textContent = '';
+      return;
+    }
+    $monsterName.textContent = monster.name;
+    $monsterHp.textContent = `HP: ${monster.hp}/${monster.maxHp}`;
+    $monsterAtt.textContent = `ATT: ${monster.att}`;
+  }
+  showMessage(text) {
+    $message.textContent = text;
   }
 }
 
